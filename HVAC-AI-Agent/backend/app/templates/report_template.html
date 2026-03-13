@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HVAC Optimization Report</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; padding: 40px; }
+        .report { max-width: 800px; margin: auto; background: #1e293b; border-radius: 16px; padding: 40px; }
+        h1 { color: #38bdf8; text-align: center; }
+        .section { margin: 24px 0; padding: 16px; background: #0f172a; border-radius: 12px; }
+        .section h3 { color: #818cf8; margin-bottom: 8px; }
+        .kv { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #334155; }
+        .kv span:last-child { font-weight: 600; color: #38bdf8; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .badge-green  { background: #065f46; color: #34d399; }
+        .badge-yellow { background: #713f12; color: #fbbf24; }
+        .badge-red    { background: #7f1d1d; color: #f87171; }
+    </style>
+</head>
+<body>
+<div class="report">
+    <h1>🏢 HVAC Energy Optimization Report</h1>
+    <p style="text-align:center;color:#94a3b8;">Generated at {{ generated_at }}</p>
+
+    <div class="section">
+        <h3>📍 Building Information</h3>
+        <div class="kv"><span>Building</span><span>{{ building }}</span></div>
+        <div class="kv"><span>Location</span><span>{{ city }} ({{ climate_zone }})</span></div>
+        <div class="kv"><span>Coordinates</span><span>{{ lat }}, {{ lon }}</span></div>
+    </div>
+
+    <div class="section">
+        <h3>🌦 Weather Conditions</h3>
+        <div class="kv"><span>Outdoor Temperature</span><span>{{ outdoor_temp }}°C</span></div>
+        <div class="kv"><span>Humidity</span><span>{{ humidity }}%</span></div>
+        <div class="kv"><span>Condition</span><span>{{ weather_condition }}</span></div>
+    </div>
+
+    <div class="section">
+        <h3>📊 Cooling Load Forecast</h3>
+        <div class="kv"><span>Predicted Cooling Load</span><span>{{ cooling_load }} kW</span></div>
+        <div class="kv"><span>Cooling Load (TR)</span><span>{{ cooling_load_tr }} TR</span></div>
+        <div class="kv"><span>Peak Load</span><span>{{ peak_load }} kW</span></div>
+    </div>
+
+    <div class="section">
+        <h3>⚙ System Diagnostics</h3>
+        <div class="kv"><span>Efficiency</span><span>{{ efficiency_status }}</span></div>
+        <div class="kv"><span>Comfort</span><span>{{ comfort_status }}</span></div>
+        <div class="kv"><span>Recommended Temp</span><span>{{ recommended_temp }}°C</span></div>
+        <div class="kv"><span>Estimated Savings</span><span>{{ energy_saving }}</span></div>
+    </div>
+
+    <div class="section">
+        <h3>🧠 AI Recommendations</h3>
+        <div class="kv"><span>Priority</span><span>{{ priority }}</span></div>
+        <ul style="margin-top:8px;">
+        {% for action in actions %}
+            <li>{{ action }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+</body>
+</html>

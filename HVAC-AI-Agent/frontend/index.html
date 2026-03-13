@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HVAC AI Agent – Energy Optimization Dashboard</title>
+    <meta name="description"
+        content="Autonomous HVAC Energy Optimization System powered by Multi-Agent AI Architecture">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+
+    <!-- ═══ HEADER ═══════════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header__glow"></div>
+        <div class="header__content">
+            <div class="header__badge">KIT Hackathon Project</div>
+            <h1 class="header__title">
+                <span class="header__icon">🏢</span>
+                HVAC AI AGENT
+            </h1>
+            <p class="header__subtitle">Autonomous Energy Optimization Platform</p>
+            <div class="header__stats">
+                <div class="stat-chip"><span class="stat-chip__dot stat-chip__dot--green"></span>System Online</div>
+                <div class="stat-chip"><span class="stat-chip__dot stat-chip__dot--blue"></span>5 Agents Ready</div>
+                <div class="stat-chip"><span class="stat-chip__dot stat-chip__dot--purple"></span>AI Engine Active</div>
+                <div class="stat-chip" id="reportCountChip"><span class="stat-chip__dot stat-chip__dot--amber"></span>Reports: <span id="totalReportCount">0</span></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- ═══ INPUT PANEL ══════════════════════════════════════ -->
+        <section class="card input-panel" id="inputPanel">
+            <div class="card__header">
+                <h2 class="card__title">
+                    <span class="card__icon">📋</span>
+                    Building Data Input
+                </h2>
+                <span class="card__badge">Step 1</span>
+            </div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="building">Building Name</label>
+                    <input type="text" id="building" placeholder="Theater, Hotel, Mall, Office">
+                </div>
+                <div class="input-group">
+                    <label for="buildingType">Building Type</label>
+                    <select id="buildingType" class="input-select">
+                        <option value="office">🏢 Office</option>
+                        <option value="mall">🛒 Mall</option>
+                        <option value="hotel">🏨 Hotel</option>
+                        <option value="theatre">🎭 Theatre</option>
+                        <option value="hospital">🏥 Hospital</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="address">Address / City</label>
+                    <input type="text" id="address" placeholder="Enter building address (e.g. Coimbatore, Chennai)">
+                </div>
+                <div class="input-group">
+                    <label for="occupancy">Occupancy</label>
+                    <input type="number" id="occupancy" placeholder="Number of people inside building">
+                </div>
+                <div class="input-group">
+                    <label for="temp">Indoor Temperature (°C)</label>
+                    <input type="number" id="temp" placeholder="Example: 24°C" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="energy">Energy Consumption (kWh)</label>
+                    <input type="number" id="energy" placeholder="Example: 620 kWh">
+                </div>
+                <div class="input-group">
+                    <label for="ikwtr">IKW/TR</label>
+                    <input type="number" id="ikwtr" placeholder="Example: 1.2" step="0.01">
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ AI PIPELINE ══════════════════════════════════════ -->
+        <section class="card pipeline-panel" id="pipelinePanel">
+            <div class="card__header">
+                <h2 class="card__title">
+                    <span class="card__icon">⚡</span>
+                    AI Multi-Agent Pipeline
+                </h2>
+                <span class="card__badge">Step 2</span>
+            </div>
+            <div class="pipeline" id="pipeline">
+                <div class="pipeline__agent" data-agent="location">
+                    <div class="pipeline__icon">📍</div>
+                    <div class="pipeline__info">
+                        <span class="pipeline__name">Location Agent</span>
+                        <span class="pipeline__desc">Resolving coordinates</span>
+                    </div>
+                    <div class="pipeline__status" id="status-location">Idle</div>
+                </div>
+                <div class="pipeline__connector"><div class="pipeline__line"></div></div>
+                <div class="pipeline__agent" data-agent="weather">
+                    <div class="pipeline__icon">🌦</div>
+                    <div class="pipeline__info">
+                        <span class="pipeline__name">Weather Agent</span>
+                        <span class="pipeline__desc">Fetching conditions</span>
+                    </div>
+                    <div class="pipeline__status" id="status-weather">Idle</div>
+                </div>
+                <div class="pipeline__connector"><div class="pipeline__line"></div></div>
+                <div class="pipeline__agent" data-agent="forecast">
+                    <div class="pipeline__icon">📊</div>
+                    <div class="pipeline__info">
+                        <span class="pipeline__name">Forecast Agent</span>
+                        <span class="pipeline__desc">Predicting cooling load</span>
+                        <div class="pipeline__extra" id="forecast-extra" style="display: none; margin-top: 8px; font-size: 0.85rem; color: #9ca3af; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                            <div style="margin-bottom: 4px;"><strong>Load:</strong> <span id="fc-load">--</span> kW</div>
+                            <div style="margin-bottom: 4px;"><strong>Bill (Optimized):</strong> <span id="fc-opt-bill" style="color: #10b981;">--</span></div>
+                            <div><strong>Bill (Non Opt.):</strong> <span id="fc-non-bill">--</span></div>
+                        </div>
+                    </div>
+                    <div class="pipeline__status" id="status-forecast">Idle</div>
+                </div>
+                <div class="pipeline__connector"><div class="pipeline__line"></div></div>
+                <div class="pipeline__agent" data-agent="diagnostic">
+                    <div class="pipeline__icon">⚙</div>
+                    <div class="pipeline__info">
+                        <span class="pipeline__name">Diagnostic Agent</span>
+                        <span class="pipeline__desc">Evaluating efficiency</span>
+                    </div>
+                    <div class="pipeline__status" id="status-diagnostic">Idle</div>
+                </div>
+                <div class="pipeline__connector"><div class="pipeline__line"></div></div>
+                <div class="pipeline__agent" data-agent="ai">
+                    <div class="pipeline__icon">🧠</div>
+                    <div class="pipeline__info">
+                        <span class="pipeline__name">AI Decision Engine</span>
+                        <span class="pipeline__desc">Generating insights</span>
+                    </div>
+                    <div class="pipeline__status" id="status-ai">Idle</div>
+                </div>
+                <div class="pipeline__connector"><div class="pipeline__line"></div></div>
+                <div class="pipeline__agent" data-agent="report">
+                    <div class="pipeline__icon">📄</div>
+                    <div class="pipeline__info">
+                        <span class="pipeline__name">Report Generator</span>
+                        <span class="pipeline__desc">Compiling report</span>
+                    </div>
+                    <div class="pipeline__status" id="status-report">Idle</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ GENERATE BUTTON ══════════════════════════════════ -->
+        <div class="action-bar">
+            <button class="btn-generate" id="generateBtn" onclick="generateReport()">
+                <span class="btn-generate__icon">⚡</span>
+                <span class="btn-generate__text">Generate HVAC Optimization Report</span>
+                <span class="btn-generate__loader" id="btnLoader"></span>
+            </button>
+        </div>
+
+        <!-- ═══ ANALYTICS DASHBOARD ═════════════════════════════ -->
+        <section class="card analytics-panel" id="analyticsPanel">
+            <div class="card__header">
+                <h2 class="card__title">
+                    <span class="card__icon">📈</span>
+                    Analytics Dashboard
+                </h2>
+                <span class="card__badge card__badge--green">Live</span>
+            </div>
+            <div class="analytics-grid" id="analyticsGrid">
+                <div class="analytics-card">
+                    <div class="analytics-card__icon">📊</div>
+                    <div class="analytics-card__value" id="anTotalReports">0</div>
+                    <div class="analytics-card__label">Total Reports</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card__icon">❄️</div>
+                    <div class="analytics-card__value" id="anAvgCooling">0 kW</div>
+                    <div class="analytics-card__label">Avg Cooling Load</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card__icon">🌡️</div>
+                    <div class="analytics-card__value" id="anAvgTemp">0°C</div>
+                    <div class="analytics-card__label">Avg Recommended Temp</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card__icon">⚡</div>
+                    <div class="analytics-card__value" id="anEnergySaved">0%</div>
+                    <div class="analytics-card__label">Energy Saved</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ REPORT HISTORY ═══════════════════════════════════ -->
+        <section class="card history-panel" id="historyPanel">
+            <div class="card__header">
+                <h2 class="card__title">
+                    <span class="card__icon">📚</span>
+                    Report History
+                </h2>
+                <div class="card__header-actions">
+                    <button class="btn-compare" id="compareBtn" onclick="openCompareModal()" style="display:none;">
+                        🔄 Compare Reports
+                    </button>
+                    <button class="btn-clear-all" id="clearAllBtn" onclick="clearAllReports()" style="display:none;">
+                        🗑 Clear All
+                    </button>
+                    <span class="card__badge card__badge--purple" id="historyCount">0 Reports</span>
+                </div>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="history-empty" id="historyEmpty">
+                    <div class="history-empty__icon">📭</div>
+                    <p class="history-empty__text">No reports generated yet</p>
+                    <p class="history-empty__hint">Click "Generate Report" to create your first HVAC analysis</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ REPORT COMPARISON ════════════════════════════════ -->
+        <section class="card comparison-panel" id="comparisonPanel" style="display:none;">
+            <div class="card__header">
+                <h2 class="card__title">
+                    <span class="card__icon">🔄</span>
+                    Report Comparison
+                </h2>
+                <button class="btn-back-to-history" onclick="document.getElementById('comparisonPanel').style.display='none'">✕ Close</button>
+            </div>
+            <div class="compare-controls">
+                <select id="compareA" class="input-select compare-select"><option>Select Report A</option></select>
+                <span class="compare-vs">VS</span>
+                <select id="compareB" class="input-select compare-select"><option>Select Report B</option></select>
+                <button class="btn-run-compare" onclick="runComparison()">Compare</button>
+            </div>
+            <div id="comparisonResult"></div>
+        </section>
+
+        <!-- ═══ REPORT OUTPUT ════════════════════════════════════ -->
+        <section class="card report-panel" id="reportPanel" style="display:none;">
+            <div class="card__header">
+                <h2 class="card__title">
+                    <span class="card__icon">📊</span>
+                    HVAC Energy Optimization Report
+                </h2>
+                <div class="card__header-actions">
+                    <button class="btn-back-to-history" id="backToHistoryBtn" onclick="scrollToHistory()" style="display:none;">
+                        ← Back to History
+                    </button>
+                    <span class="card__badge card__badge--green" id="reportId">Report</span>
+                </div>
+            </div>
+            <div id="reportContent"></div>
+        </section>
+    </main>
+
+    <!-- ═══ FOOTER ═══════════════════════════════════════════════ -->
+    <footer class="footer">
+        <p>HVAC AI Agent v2.0 · KIT Hackathon 2026 · AI Energy Optimization Platform</p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
